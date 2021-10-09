@@ -21,10 +21,12 @@
 
 #include "headers.hpp"
 
-Muppet::Muppet(Room *location) {
+Muppet::Muppet(Room *location, RC4 *Rand) {
     this->location = location;
+    this->prev_loc = 0;
     this->moveCounter = 0;
     this->hasDied = false;
+    this->Rand = Rand;
 }
 
 void Muppet::doActions() {
@@ -36,7 +38,10 @@ void Muppet::doActions() {
 }
 
 void Muppet::runAway() {
-    int randRoom = (rand()%3);
+    int randRoom;
+rr: randRoom = (this->Rand->rand()%3);
+    if(randRoom == this->prev_loc) goto rr;
+    this->prev_loc = this->location->ID;
     this->location = this->location->rooms[randRoom];
 }
 

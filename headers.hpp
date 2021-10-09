@@ -13,6 +13,45 @@
 
 //#define DEBUG
 
+class RC4 {
+    public:
+    RC4(char *seed, int len);
+    unsigned int rand();
+    unsigned char rand8();
+    
+    private:
+    unsigned char state[256];
+    unsigned int x,y;
+};
+
+#define SEEDSIZE 32
+char *init_rc4();
+
+class VGA256Term {
+    public:
+    
+    VGA256Term();
+    void draw_term();
+    void clear_screen(unsigned char color);
+    void printf_term(char *s, ...);
+    void printchar_term(char c);
+    void move_cursor_offset(unsigned int x, unsigned int y);
+    int get_int();
+    ~VGA256Term();
+
+    private:
+    unsigned char far *video_buffer;
+
+    char term_buff[40][25];
+    char term_buff2[40][25];
+    int term_x, term_y;
+
+    void Set_Video_Mode(int mode);
+    void print_char(char c, int x1, int y1, char color, char bgcolor);
+    void set_color(int index, int red, int green, int blue);
+    void term_newline();
+};
+
 class Room {
     public:
     int ID;
@@ -50,38 +89,16 @@ class Muppet {
     bool hasDied;
     int moveCounter;
 
-    Muppet(Room *location);
+    Muppet(Room *location, RC4 *Rand);
     void doActions();
     void runAway();
     ~Muppet();
     #ifdef DEBUG
     void debug();
     #endif
-};
-
-class VGA256Term {
-    public:
-    
-    VGA256Term();
-    void draw_term();
-    void clear_screen(unsigned char color);
-    void printf_term(char *s, ...);
-    void printchar_term(char c);
-    void move_cursor_offset(unsigned int x, unsigned int y);
-    int get_int();
-    ~VGA256Term();
-
     private:
-    unsigned char far *video_buffer;
-
-    char term_buff[40][25];
-    char term_buff2[40][25];
-    int term_x, term_y;
-
-    void Set_Video_Mode(int mode);
-    void print_char(char c, int x1, int y1, char color, char bgcolor);
-    void set_color(int index, int red, int green, int blue);
-    void term_newline();
+    RC4 *Rand;
+    int prev_loc;
 };
 
 #endif
