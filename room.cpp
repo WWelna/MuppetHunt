@@ -23,8 +23,9 @@
 
 Room::Room(int id) {
     this->ID = id;
-    this->hasAnkleBitters = false;
+    this->hasAnkleBiters = false;
     this->hasMaltego = false;
+    this->hasSupplies = false;
 }
 
 void Room::setRooms(Room *r1, Room *r2, Room *r3) {
@@ -32,12 +33,3 @@ void Room::setRooms(Room *r1, Room *r2, Room *r3) {
     this->rooms[1] = r2;
     this->rooms[2] = r3;
 }
-
-Room::~Room() {
-}
-
-#ifdef DEBUG
-void Room::debug() {
-    printf("ROOM ID #%d Borders [%d %d %d]\n", this->ID, this->rooms[0]->ID, this->rooms[1]->ID, this->rooms[2]->ID);
-}
-#endif

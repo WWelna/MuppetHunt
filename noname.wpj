@@ -4,8 +4,8 @@ projectIdent
 VpeMain
 1
 WRect
-1408
-132
+176
+199
 7680
 9216
 2
@@ -28,8 +28,8 @@ WVList
 VComponent
 8
 WRect
-0
-0
+890
+75
 5712
 4352
 0
@@ -39,5 +39,5 @@ WFileName
 10
 muppet.tgt
 0
-9
+6
 7

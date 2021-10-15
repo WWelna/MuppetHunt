@@ -35,12 +35,3 @@ void Player::doActions() {
     } else
         this->supplies -= 1;
 }
-
-Player::~Player() {
-}
-
-#ifdef DEBUG
-void Player::debug() {
-    printf("PLAYER LOCATION #%i Arrows %d Died %d\n", this->location->ID, this->arrows, this->hasDied);
-}
-#endif

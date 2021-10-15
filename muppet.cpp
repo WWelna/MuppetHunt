@@ -68,8 +68,8 @@ bool startGame(VGA256Term *Term, RC4 *Rand) {
     x=2;
     while(x > 0) {
         randint = getRandomRoom(Rand);
-        if(!rooms[randint]->hasAnkleBitters && !rooms[randint]->hasMaltego) {
-            rooms[randint]->hasAnkleBitters = true;
+        if(!rooms[randint]->hasAnkleBiters && !rooms[randint]->hasMaltego) {
+            rooms[randint]->hasAnkleBiters = true;
             x -= 1;
         }
     }
@@ -78,8 +78,18 @@ bool startGame(VGA256Term *Term, RC4 *Rand) {
     x=2;
     while(x > 0) {
         randint = getRandomRoom(Rand);
-        if(!rooms[randint]->hasAnkleBitters && !rooms[randint]->hasMaltego) {
+        if(!rooms[randint]->hasAnkleBiters && !rooms[randint]->hasMaltego) {
             rooms[randint]->hasMaltego = true;
+            x -= 1;
+        }
+    }
+
+    // Add Supplies
+    x=2;
+    while(x > 0) {
+        randint = getRandomRoom(Rand);
+        if(!rooms[randint]->hasSupplies && !rooms[randint]->hasSupplies) {
+            rooms[randint]->hasSupplies = true;
             x -= 1;
         }
     }
@@ -92,9 +102,9 @@ bool startGame(VGA256Term *Term, RC4 *Rand) {
             Term->printf_term("You hear the Squeal of a Muppet!\n");
         if(Neal->location->rooms[0]->hasMaltego || Neal->location->rooms[1]->hasMaltego || Neal->location->rooms[2]->hasMaltego)
             Term->printf_term("You are blinded by rainbow orbs!\n");
-        if(Neal->location->rooms[0]->hasAnkleBitters || Neal->location->rooms[1]->hasAnkleBitters || Neal->location->rooms[2]->hasAnkleBitters)
+        if(Neal->location->rooms[0]->hasAnkleBiters || Neal->location->rooms[1]->hasAnkleBiters || Neal->location->rooms[2]->hasAnkleBiters)
             Term->printf_term("You clutch your supplies nervously...\n");
-        Term->printf_term("Muppet Location #%\n", Cody->location->ID);
+        //Term->printf_term("Muppet Location #%\n", Cody->location->ID);
         Term->printf_term("[M]ove [W]ait [S]hoot?\n");
 
 top:   c = getch();
@@ -148,8 +158,8 @@ invalid2:    Term->printf_term("Fire arrow to? :> "); x = Term->get_int();
         }
 
         if(Neal->hasDied == false) {
-            if(Neal->location->hasAnkleBitters == true) {
-                Term->printf_term("Ankle Bitters have stolen from you!\n");
+            if(Neal->location->hasAnkleBiters == true) {
+                Term->printf_term("Ankle Biters have stolen from you!\n");
                 Neal->supplies -= (Rand->rand()%4)+1; // 1-5 supplies get stolen
             } else if(Neal->location->hasMaltego == true) {
                 Term->printf_term("You stare at Maltego and get disoriented...\n");
@@ -157,6 +167,10 @@ randagain: randint =  Rand->rand()%20;
                 if(Cody->location->ID != rooms[randint]->ID)
                     Neal->location = rooms[randint];
                 else goto randagain;
+            } else if(Neal->location->hasSupplies) {
+                Term->printf_term("You found some Supplies!\n");
+                Neal->supplies =+ (Rand->rand()%4)+1; // 1-5 supplies found
+                Neal->location->hasSupplies = false; // Supplies shouldn't respawn
             }
         }
 

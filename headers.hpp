@@ -11,8 +11,6 @@
 #include <time.h>
 #include <stdarg.h>
 
-//#define DEBUG
-
 class RC4 {
     public:
     RC4(char *seed, int len);
@@ -56,16 +54,13 @@ class Room {
     public:
     int ID;
     Room *rooms[3];
-    bool hasAnkleBitters;
+    bool hasAnkleBiters;
     bool hasMaltego;
+    bool hasSupplies;
     
     
     Room(int id);
     void setRooms(Room *r1, Room *r2, Room *r3);
-    ~Room();
-    #ifdef DEBUG
-    void debug();
-    #endif
 };
 
 class Player {
@@ -76,11 +71,7 @@ class Player {
     int supplies;
 
     Player(Room *location);
-    ~Player();
     void doActions();
-    #ifdef DEBUG
-    void debug();
-    #endif
 };
 
 class Muppet {
@@ -92,10 +83,6 @@ class Muppet {
     Muppet(Room *location, RC4 *Rand);
     void doActions();
     void runAway();
-    ~Muppet();
-    #ifdef DEBUG
-    void debug();
-    #endif
     private:
     RC4 *Rand;
     int prev_loc;

@@ -44,12 +44,3 @@ rr: randRoom = (this->Rand->rand()%3);
     this->prev_loc = this->location->ID;
     this->location = this->location->rooms[randRoom];
 }
-
-Muppet::~Muppet() {
-}
-
-#ifdef DEBUG
-void Muppet::debug() {
-    printf("Muppet Location #%d moveCounter %d hasDied %d\n", this->location->ID, this->moveCounter, this->hasDied);
-}
-#endif
