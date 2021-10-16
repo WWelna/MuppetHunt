@@ -66,28 +66,28 @@ void VGA256Term::draw_term() {
     int x,y;
     for(y=0; y < TERM_HEIGHT; ++y)
         for(x=0; x < TERM_WIDTH; ++x)
-            if(term_buff2[x][y] != term_buff[x][y])
-                this->print_char(term_buff[x][y], x*GLYPH_SIZE, y*GLYPH_SIZE, 0, 15); // 0 = Black, 15 = White
-    memcpy(term_buff2, term_buff, TERM_WIDTH*TERM_HEIGHT);
+            if(this->term_buff2[x][y] != this->term_buff[x][y])
+                this->print_char(this->term_buff[x][y], x*GLYPH_SIZE, y*GLYPH_SIZE, 0, 15); // 0 = Black, 15 = White
+    memcpy(this->term_buff2, this->term_buff, TERM_WIDTH*TERM_HEIGHT);
 }
 
 void VGA256Term::term_newline() {
     unsigned int x, y;
-    if(term_y >= TERM_HEIGHT-1) {
+    if(this->term_y >= TERM_HEIGHT-1) {
         for(y=1; y < TERM_HEIGHT; ++y)
             for(x=0; x < TERM_WIDTH; ++x) // Move everything up by 1, erasing the first line
-                term_buff[x][y-1] = term_buff[x][y];
+                this->term_buff[x][y-1] = this->term_buff[x][y];
         for(x=0; x < TERM_WIDTH; ++x) // clear last line
-            term_buff[x][TERM_HEIGHT-1] = 0;
-       term_y = TERM_HEIGHT-1;
-    } else term_y += 1;
+            this->term_buff[x][TERM_HEIGHT-1] = 0;
+       this->term_y = TERM_HEIGHT-1;
+    } else this->term_y += 1;
     term_x = 0; // Back to start
 }
 
 void VGA256Term::move_cursor_offset(unsigned int x, unsigned int y) {
-    if( (term_x + x) < TERM_WIDTH && (term_y + y) < TERM_HEIGHT) {
-        term_x += x;
-        term_y += y;
+    if( (this->term_x + x) < TERM_WIDTH && (this->term_y + y) < TERM_HEIGHT) {
+        this->term_x += x;
+        this->term_y += y;
     }
 }
 
@@ -115,13 +115,13 @@ void VGA256Term::printf_term(char *s, ...) {
             memset(buffer, 0, 8);
             itoa(arg_int, buffer, 10);
             this->printf_term(buffer); // recursive call to print string sequence
-        } else if(term_x < TERM_WIDTH && term_y < TERM_HEIGHT) { // Within bounds
-            term_buff[term_x][term_y] = *(s+x);
-            term_x += 1;
-        } else if(term_x > TERM_WIDTH) { // do screen wrap
+        } else if(this->term_x < TERM_WIDTH && this->term_y < TERM_HEIGHT) { // Within bounds
+            this->term_buff[this->term_x][this->term_y] = *(s+x);
+            this->term_x += 1;
+        } else if(this->term_x > TERM_WIDTH) { // do screen wrap, also does not work for some reason
             this->term_newline();
-            term_buff[term_x][term_y] = *(s+x);
-            term_x += 1;
+            this->term_buff[this->term_x][this->term_y] = *(s+x);
+            this->term_x += 1;
         }
     }
     va_end(ap);
@@ -129,24 +129,33 @@ void VGA256Term::printf_term(char *s, ...) {
 }
 
 void VGA256Term::printchar_term(char c) {
-    if(term_x < TERM_WIDTH && term_y < TERM_HEIGHT) {
-        term_buff[term_x][term_y] = c;
-        term_x += 1;
-    } else if (term_x > TERM_WIDTH) { // screen wrap
+    if(this->term_x < TERM_WIDTH && this->term_y < TERM_HEIGHT) {
+        this->term_buff[this->term_x][this->term_y] = c;
+        this->term_x += 1;
+    } else if (this->term_x > TERM_WIDTH) { // screen wrap, also does not work for some reason
         this->term_newline();
-        term_buff[term_x][term_y] = c;
-        term_x += 1;
+        this->term_buff[this->term_x][this->term_y] = c;
+        this->term_x += 1;
     }
 }
 
-int VGA256Term::get_int() {
+int VGA256Term::get_int() { // Will break on long number input
     char c;
     int ret=0;
+    int start_x = this->term_x;
     while ((c=getch()) != '\r')
         if(c < 58 && c > 47) {
-            ret = ((ret << 3) + (ret << 1)) + (c-48);
+            //ret = ((ret << 3) + (ret << 1)) + (c-48);
             this->printchar_term(c); this->draw_term();
+        } else if (c == '\b') {
+            if(start_x < this->term_x) {
+                this->move_cursor_offset(-1, 0);
+                this->term_buff[this->term_x][this->term_y] = 0;
+                this->draw_term();
+            }
         }
+    for(; this->term_x > start_x; ++start_x)
+        ret = ((ret << 3) + (ret << 1)) + (this->term_buff[start_x][this->term_y]-48);
     this->term_newline();
     return ret;
 }

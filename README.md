@@ -1,6 +1,6 @@
 # Muppet Hunt
 A silly game inspired by [Hunt The Wumpus](https://en.wikipedia.org/wiki/Hunt_the_Wumpus), but more... interesting!
-![Game Play](https://i.imgur.com/cZIMkai.png)
+![Game Play](https://i.imgur.com/lVhsPxxl.png)
 
 ## Gameplay Mechanics
 * The cave system is a [dodecahedron](https://en.wikipedia.org/wiki/File:Hunt_the_Wumpus_map.svg) as in Hunt The Wumpus.

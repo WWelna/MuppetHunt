@@ -47,7 +47,7 @@ bool startGame(VGA256Term *Term, RC4 *Rand) {
     // Ring 2
     rooms[5]->setRooms(rooms[4], rooms[6], rooms[14]);
     rooms[6]->setRooms(rooms[5], rooms[7], rooms[16]);
-    rooms[7]->setRooms(rooms[6], rooms[0], rooms[7]);
+    rooms[7]->setRooms(rooms[6], rooms[0], rooms[8]);
     rooms[8]->setRooms(rooms[7], rooms[16], rooms[18]);
     rooms[9]->setRooms(rooms[8], rooms[1], rooms[10]);
     rooms[10]->setRooms(rooms[9], rooms[18], rooms[11]);
